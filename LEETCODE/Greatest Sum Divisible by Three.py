@@ -53,4 +53,4 @@ class Solution:
                     dp[new_r] = max(dp[new_r], r + num)
             
             return dp[0]
-        return maxSumDivThree(nums)
+        return maxSumDivThree(nums) 
