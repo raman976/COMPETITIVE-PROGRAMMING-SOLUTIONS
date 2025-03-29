@@ -66,3 +66,4 @@ q2=s//np
 q3=limes 
 p=min(q1,q2,q3)
 print(p//n)
+
