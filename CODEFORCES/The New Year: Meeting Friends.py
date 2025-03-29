@@ -18,7 +18,7 @@ Output
 Print one integer — the minimum total distance the friends need to travel in order to meet together.
 Examples
 Input
-Copy
+copy
 
 7 1 4
 
