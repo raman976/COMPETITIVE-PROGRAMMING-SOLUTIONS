@@ -1,0 +1,265 @@
+// F. Mike and strings
+// time limit per test
+// 2 seconds
+// memory limit per test
+// 256 megabytes
+
+// Mike has n strings s1, s2, ..., sn each consisting of lowercase English letters. In one move he can choose a string si, erase the first character and append it to the end of the string. For example, if he has the string "coolmike", in one move he can transform it into the string "oolmikec".
+
+// Now Mike asks himself: what is minimal number of moves that he needs to do in order to make all the strings equal?
+// Input
+
+// The first line contains integer n (1 ≤ n ≤ 50) — the number of strings.
+
+// This is followed by n lines which contain a string each. The i-th line corresponding to string si. Lengths of strings are equal. Lengths of each string is positive and don't exceed 50.
+// Output
+
+// Print the minimal number of moves Mike needs in order to make all the strings equal or print  - 1 if there is no solution.
+// Examples
+// Input
+// Copy
+
+// 4
+// xzzwo
+// zwoxz
+// zzwox
+// xzzwo
+
+// Output
+// Copy
+
+// 5
+
+// Input
+// Copy
+
+// 2
+// molzv
+// lzvmo
+
+// Output
+// Copy
+
+// 2
+
+// Input
+// Copy
+
+// 3
+// kc
+// kc
+// kc
+
+// Output
+// Copy
+
+// 0
+
+// Input
+// Copy
+
+// 3
+// aa
+// aa
+// ab
+
+// Output
+// Copy
+
+// -1
+
+// Note
+
+// In the first sample testcase the optimal scenario is to perform operations in such a way as to transform all strings into "zwoxz".
+
+#include <bits/stdc++.h>
+using namespace std;
+
+#define int long long
+#define pb push_back
+#define all(x) x.begin(), x.end()
+#define rall(x) x.rbegin(), x.rend()
+typedef vector<int> vi;
+typedef pair<int, int> pii;
+
+// DEBUGGING TEMPLATE
+#ifndef DEBUG_TEMPLATE_CPP
+#define DEBUG_TEMPLATE_CPP
+#include <bits/stdc++.h>
+using namespace std;
+
+namespace __DEBUG_UTIL__
+{
+    template <typename T>
+    concept is_iterable = requires(T &&x) { begin(x); } &&
+                          !is_same_v<remove_cvref_t<T>, string>;
+    void print(const char *x) { cerr << x; }
+    void print(char x) { cerr << "'" << x << "'"; }
+    void print(bool x) { cerr << (x ? "T" : "F"); }
+    void print(string x) { cerr << '"' << x << '"'; }
+    void print(vector<bool> &v)
+    {
+        int f = 0;
+        cerr << '{';
+        for (auto &&i : v)
+            cerr << (f++ ? "," : "") << (i ? "T" : "F");
+        cerr << "}";
+    }
+    template <typename T>
+    void print(T &&x)
+    {
+        if constexpr (is_iterable<T>)
+            if (size(x) && is_iterable<decltype(*(begin(x)))>)
+            {
+                int f = 0;
+                cerr << "\n~~~~~\n";
+                int w = max(0LL, (long long)log10(size(x) - 1)) + 2;
+                for (auto &&i : x)
+                {
+                    cerr << setw(w) << left << f++, print(i), cerr << "\n";
+                }
+                cerr << "~~~~~\n";
+            }
+            else
+            {
+                int f = 0;
+                cerr << "{";
+                for (auto &&i : x)
+                    cerr << (f++ ? "," : ""), print(i);
+                cerr << "}";
+            }
+        else if constexpr (requires { x.pop(); })
+        {
+            auto temp = x;
+            int f = 0;
+            cerr << "{";
+            if constexpr (requires { x.top(); })
+                while (!temp.empty())
+                    cerr << (f++ ? "," : ""), print(temp.top()), temp.pop();
+            else
+                while (!temp.empty())
+                    cerr << (f++ ? "," : ""), print(temp.front()), temp.pop();
+            cerr << "}";
+        }
+        else if constexpr (requires { x.first; x.second; })
+        {
+            cerr << '(', print(x.first), cerr << ',', print(x.second), cerr << ')';
+        }
+        else if constexpr (requires { get<0>(x); })
+        {
+            int f = 0;
+            cerr << '(', apply([&f](auto... args)
+                               { ((cerr << (f++ ? "," : ""), print(args)), ...); },
+                               x);
+            cerr << ')';
+        }
+        else
+            cerr << x;
+    }
+    template <typename T, typename... V>
+    void printer(const char *names, T &&head, V &&...tail)
+    {
+        int i = 0;
+        for (int bracket = 0; names[i] != '\0' and (names[i] != ',' or bracket > 0); i++)
+            if (names[i] == '(' or names[i] == '<' or names[i] == '{')
+                bracket++;
+            else if (names[i] == ')' or names[i] == '>' or names[i] == '}')
+                bracket--;
+        cerr.write(names, i) << " = ";
+        print(head);
+        if constexpr (sizeof...(tail))
+            cerr << " ||", printer(names + i + 1, tail...);
+        else
+            cerr << "]\n";
+    }
+    template <typename T, typename... V>
+    void printerArr(const char *names, T arr[], size_t N, V... tail)
+    {
+        size_t i = 0;
+        for (; names[i] and names[i] != ','; i++)
+            cerr << names[i];
+        for (i++; names[i] and names[i] != ','; i++)
+            ;
+        cerr << " = {";
+        for (size_t ind = 0; ind < N; ind++)
+            cerr << (ind ? "," : ""), print(arr[ind]);
+        cerr << "}";
+        if constexpr (sizeof...(tail))
+            cerr << " ||", printerArr(names + i + 1, tail...);
+        else
+            cerr << "]\n";
+    }
+}
+#ifndef ONLINE_JUDGE
+#define debug(...) cerr << __LINE__ << ": [", __DEBUG_UTIL__::printer(#__VA_ARGS__, __VA_ARGS__)
+#define debugArr(...) cerr << __LINE__ << ": [", __DEBUG_UTIL__::printerArr(#__VA_ARGS__, __VA_ARGS__)
+#else
+#define debug(...)
+#define debugArr(...)
+#endif
+#endif
+
+void solve() {
+    int n;
+    cin >> n;
+    vector<string> v(n);
+    for (int i = 0; i < n; ++i) cin >> v[i];
+    int min_turns=10000000000000;
+    bool outer_flag=true;
+    for(auto x:v){
+        bool flag=true;
+        int sum_per=0;
+        set<char> outer(all(x));
+        int big=outer.size();
+        for(auto z:v){
+            int count=0;
+            set<char> inner(all(z));
+            int small=inner.size();
+            
+            if(inner!=outer){
+                flag=false;
+                break;
+            }
+            if(x.size()!=z.size()){
+                flag=false;
+                break;
+            }
+            while (z!=x){
+                count+=1;
+                char first=z[0];
+                z=z.substr(1,z.size()-1);
+                z+=first;
+                if(count>=z.size()){
+                    flag=false;
+                    break;
+                }
+                // debug(z);
+            }
+            sum_per+=count;
+            // cerr<<"   end inside\n";
+        }
+
+        min_turns=min(min_turns,sum_per);
+        // cerr<<"end for "<<sum_per<<"\n";
+        if(flag==false){
+            outer_flag=false;
+            break;
+        }
+    }
+    if(outer_flag){ cout<<min_turns;}
+    else{cout<<-1;}
+    
+}
+
+#undef int
+int main(int argc, char const *argv[]) {
+    #define int long long
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int t = 1;
+    // cin >> t;
+    while (t--) solve();
+
+    return 0;
+}
