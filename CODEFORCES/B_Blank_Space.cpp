@@ -3,11 +3,11 @@ using namespace std;
 
 int main() {
     int t;
-    cin >> t;  // number of test cases
+    cin >> t;
 
     while (t--) {
         int n;
-        cin >> n;  // length of the array
+        cin >> n;
 
         int max_blank = 0, current_blank = 0;
 
