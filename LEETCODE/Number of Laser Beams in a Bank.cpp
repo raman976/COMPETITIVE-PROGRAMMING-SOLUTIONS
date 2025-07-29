@@ -16,8 +16,6 @@
 
 // Return the total number of laser beams in the bank.
 
- 
-
 // Example 1:
 
 // Input: bank = ["011001","000000","010100","001000"]
@@ -40,8 +38,6 @@
 // Output: 0
 // Explanation: There does not exist two devices located on two different rows.
 
- 
-
 // Constraints:
 
 //     m == bank.length
@@ -49,18 +45,21 @@
 //     1 <= m, n <= 500
 //     bank[i][j] is either '0' or '1'.
 
-
-
-
-
-class Solution {
+class Solution
+{
 public:
-    int numberOfBeams(vector<string>& bank) {
+    int numberOfBeams(vector<string> &bank)
+    {
         int totalBeams = 0;
-        int prevCount = 0;        for (const string& row : bank) {
+        int prevCount = 0;
+        for (const string &row : bank)
+        {
             int currCount = count(row.begin(), row.end(), '1');
-            if (currCount == 0) continue;            totalBeams += prevCount * currCount;
+            if (currCount == 0)
+                continue;
+            totalBeams += prevCount * currCount;
             prevCount = currCount;
-        }        return totalBeams;
+        }
+        return totalBeams;
     }
 };
