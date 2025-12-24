@@ -1,0 +1,178 @@
+// E. Points Selection
+// time limit per test
+// 2 seconds
+// memory limit per test
+// 512 megabytes
+
+// Alice and Bob are playing with points on the XY plane. Initially, there are n
+// points on the plane: the i-th point is located at (xi,yi) and has a cost of ci
+
+// .
+
+// The game consists of two stages:
+
+//     First, Alice selects some points (possibly none, but not all) and removes them from the field.
+//     Then, Bob draws a rectangle with sides parallel to the coordinate axes, such that all remaining points lie inside or on the boundary of this rectangle. The rectangle can degenerate into a line segment or even a point. 
+
+// After that, the game ends and the total score is calculated. The total score of the game is the sum of the costs of the removed points by Alice and the perimeter of the rectangle drawn by Bob. Alice wants to maximize the score, while Bob wants to minimize it.
+
+// Determine the total score of the game if both Alice and Bob play optimally.
+
+// The perimeter of the rectangle is equal to the sum of the lengths of all its four sides. Therefore, even if the rectangle degenerates into a line segment of length k
+// , its perimeter will be 2k. The perimeter of a rectangle that degenerates into a point is 0
+
+// .
+// Input
+
+// The first line contains a single integer t
+// (1≤t≤104
+
+// ) — the number of test cases.
+
+// The first line of each test case contains a single integer n
+// (1≤n≤3⋅105
+
+// ) — the number of points on the plane.
+
+// The second line of each test case contains n
+// integers x1,x2,…,xn (0≤xi≤1015) — the x
+
+// -coordinates of the points.
+
+// The third line contains n
+// integers y1,y2,…,yn (0≤yi≤1015) — the y
+
+// -coordinates of the points.
+
+// The fourth line contains n
+// integers c1,c2,…,cn (0≤ci≤109
+
+// ) — the costs of the points.
+
+// Additional constraints on the input:
+
+//     in one test case, all points are pairwise distinct;
+//     the total number of points across all test cases does not exceed 3⋅105
+
+//     . 
+
+// Output
+
+// For each test case, output a single integer — the final score of the game if both Alice and Bob play optimally.
+// Example
+// Input
+// Copy
+
+// 4
+// 1
+// 42
+// 42
+// 1000
+// 4
+// 5 10 5 0
+// 0 5 10 5
+// 1 1 1 1
+// 4
+// 6 7 8 9
+// 3 3 3 3
+// 9 0 9 0
+// 2
+// 1000000000 10
+// 10 1000000000
+// 12345 54321
+
+// Output
+// Copy
+
+// 0
+// 40
+// 22
+// 3999999960
+
+// Note
+
+// In the first test case, there is only one point, and Alice cannot remove it. Then Bob constructs the rectangle (1,1)−(1,1)
+// with a perimeter of 0
+
+// .
+
+// In the second test case, it is optimal for Alice not to remove any points. Then Bob constructs the rectangle (0,0)−(10,10)
+// with a perimeter of 40
+
+// .
+
+// In the third test case, it is optimal for Alice to remove the first and third points. Then Bob constructs the rectangle (7,3)−(9,3)
+// with a perimeter of 4. The total score will be 9+9+4=22.
+
+
+
+
+#include<bits/stdc++.h>
+ 
+using namespace std;
+ 
+#define fore(i, l, r) for(int i = int(l); i < int(r); i++)
+#define sz(a) int((a).size())
+ 
+typedef long long li;
+ 
+const int INF = int(1e9);
+const li INF64 = li(1e18);
+ 
+int n;
+vector<li> x[3];
+ 
+bool read() {
+    if(!(cin >> n))
+        return false;
+    fore (k, 0, 3) {
+        x[k].resize(n);
+        fore (i, 0, n)
+            cin >> x[k][i];
+    }
+    return true;
+}
+ 
+void solve() {
+    vector< vector<li> > w(n, vector<li>(1 << 4, 0));
+    fore (i, 0, n) {
+        fore (mask, 0, 1 << 4) {
+            fore (k, 0, 4) if ((mask >> k) & 1)
+                w[i][mask] += x[k & 1][i] * (k < 2 ? -1 : 1);
+        }
+    }
+ 
+    vector< vector<li> > d(n + 1, vector<li>(1 << 4, -INF64));
+    d[0][0] = 0;
+    fore (i, 0, n) fore (mask, 0, 1 << 4) {
+        if (d[i][mask] < -INF64 / 2)
+            continue;
+        
+        d[i + 1][mask] = max(d[i + 1][mask], d[i][mask] + x[2][i]);
+ 
+        int filter = ((1 << 4) - 1) ^ mask;
+        for (int cmask = filter; cmask > 0; cmask = (cmask - 1) & filter)
+            d[i + 1][mask | cmask] = max(d[i + 1][mask | cmask], d[i][mask] + 2ll * w[i][cmask]);
+    }
+    cout << d[n][(1 << 4) - 1] << endl;
+}
+ 
+int main() {
+#ifdef _DEBUG
+    freopen("input.txt", "r", stdin);
+    int tt = clock();
+#endif
+    ios_base::sync_with_stdio(false);
+ 
+    int t; cin >> t;
+    while (t--) {
+        read();
+        solve();
+        
+#ifdef _DEBUG
+        cerr << "TIME = " << clock() - tt << endl;
+        tt = clock();
+#endif
+    }
+    return 0;
+}
